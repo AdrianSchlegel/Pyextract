@@ -92,4 +92,15 @@ For each image, Pyxtract creates a corresponding .txt file containing the extrac
 ### 5. Result Output:
 If print_result is set to True, the extracted text from each image is also printed to the console.
 
+______________________________________________________________________________________________________________
+
+# ERRORS:
+
+# When experiencing errors make sure that:
+- You have all prerequisites installed correctly
+- Make sure you have chmod +x main allowed
+- make sure the script exists in the $PATH
+
+### If this still doesn't work create an issue and I will help you troubleshoot!
+
 Happy text extracting with Pyxtract!
