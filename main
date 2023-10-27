@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+
+import pytesseract
+from PIL import ImageGrab, Image
+import pyperclip
+import yaml
+from pathlib import Path
+import os
+
+def load_config():
+    with open("config.yaml", "r") as file:
+        yaml_data = yaml.safe_load(file)
+    return yaml_data
+
+def get_image_from_clipboard():
+    try:
+        image = ImageGrab.grabclipboard()
+        if isinstance(image, Image.Image):
+            return image
+        else:
+            print("No image in clipboard")
+            return None
+    except Exception as e:
+        print("Error:", e)
+        return None
+
+def is_image_file(filename):
+    image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']
+    return any(filename.suffix.lower() == ext for ext in image_extensions)
+
+def image_to_string(image, language):
+    return pytesseract.image_to_string(image, lang=language)
+
+def main():
+    yaml_data = load_config()
+    result = []
+
+    if yaml_data["use_clipboard_for_input"]:
+        image = get_image_from_clipboard()
+        if image is None:
+            return
+        
+        try:
+            result = image_to_string(image, yaml_data["language"])
+        except pytesseract.pytesseract.TesseractError as e:
+            print(f"Pytesseract encountered an error: {e}")
+    else:
+        directory = Path(os.path.expanduser(yaml_data["path_to_directory"]))
+        files = [entry for entry in directory.iterdir() if entry.is_file()]
+        for file in files:
+            if is_image_file(file):
+                with Image.open(file) as img:
+                    img_to_append = image_to_string(img, yaml_data["language"])
+                    result.append([file, img_to_append])
+                    
+    if yaml_data["save_data"]:
+        save_directory = Path(os.path.expanduser(yaml_data["save_location"]))
+        save_directory.mkdir(parents=True, exist_ok=True)
+        
+        if isinstance(result, str):
+            file_count = len(list(save_directory.glob('*.txt')))
+            with open(save_directory / f"{file_count+1}.txt", "w") as file:
+                file.write(result)
+        else:
+            for item in result:
+                with open(item[0].with_suffix('.txt'), "w") as file:
+                    file.write(item[1])
+    else:
+        if not yaml_data["use_clipboard_for_input"]:
+            print("use_clipboard_for_input can't be false when save_data is false")
+            return
+        pyperclip.copy(result)
+
+
+    if yaml_data["print_result"]:
+        if isinstance(result, str):
+            print(result)
+        else:
+            for item in result:
+                print(f"{item[0].name}\n{item[1]}\n")
+
+if __name__ == "__main__":
+    main()
