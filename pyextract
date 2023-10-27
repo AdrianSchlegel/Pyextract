@@ -8,7 +8,9 @@ from pathlib import Path
 import os
 
 def load_config():
-    with open("config.yaml", "r") as file:
+    executable_path = os.path.abspath(__file__)
+    executable_dir = os.path.dirname(executable_path)
+    with open(f"{executable_dir}/config.yaml", "r") as file:
         yaml_data = yaml.safe_load(file)
     return yaml_data
 
