@@ -98,7 +98,7 @@ ________________________________________________________________________________
 
 # When experiencing errors make sure that:
 - You have all prerequisites installed correctly
-- Make sure you have chmod +x main allowed
+- Make sure you have chmod +x pyextract allowed
 - make sure the script exists in the $PATH
 
 ### If this still doesn't work create an issue and I will help you troubleshoot!
