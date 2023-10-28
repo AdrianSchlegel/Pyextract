@@ -16,7 +16,7 @@ Before you begin, ensure you have the following installed on your system:
 - Tesseract OCR (Installation Guide below)
 - Tessdata for more language support
 
-###Installation Steps
+### Installation Steps
 Clone the Repository:
 
 ```git clone https://github.com/AdrianSchlegel/Pyextract.git```
